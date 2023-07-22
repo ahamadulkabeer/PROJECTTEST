@@ -1,0 +1,49 @@
+func LoginHandler(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("login handler running >>> ")
+	//utils.Display()
+	/*if _, err := r.Cookie("Authorise"); err != nil {
+		utils.Templ.ExecuteTemplate(w, "login.html", nil)
+	} else {
+		http.Redirect(w, r, "/home", http.StatusSeeOther)
+	}*/
+	if cookieFound(w, r) {
+		http.Redirect(w, r, "/home", http.StatusSeeOther)
+	} else {
+		utils.Templ.ExecuteTemplate(w, "login.html", nil)
+		fmt.Println("login page running")
+		username := r.PostFormValue("username")
+		password := r.PostFormValue("password")
+		fmt.Println("variables assaigned")
+		fmt.Println(username, password)
+		fmt.Println("checking for the username  >>>")
+		if _, found := Userdata[username]; found {
+			fmt.Println("____________and found")
+			fmt.Println("checking if passord is correct >>>")
+			if password == Userdata[username] {
+				fmt.Println("found it is correct !!!!")
+				fmt.Println("now creating cookies >>>")
+				cookie := http.Cookie{
+					Name:  "Authorise",
+					Value: username,
+				}
+				fmt.Println("cookie created :- ", cookie, ";")
+				fmt.Println("setting cookie>>")
+				http.SetCookie(w, &cookie)
+				fmt.Println("cookie set... and redirecting to home")
+				http.Redirect(w, r, "/home", http.StatusSeeOther)
+				//utils.Templ.ExecuteTemplate(w, "home.html", nil)
+				return
+			}
+			/*else {
+				//passworderr := "urappano ?"
+				//utils.Templ.ExecuteTemplate(w, "login.html", passworderr)
+			}*/
+		} else {
+			fmt.Println("and _________not found")
+			//usernameerr := "marannupoyo kutta ?"
+			//fmt.Println("commented the issuee !!!!")
+			//utils.Templ.ExecuteTemplate(w, "login.html", usernameerr)
+		}
+	}
+	//http.Redirect(w, r, "/", http.StatusSeeOther)
+}
