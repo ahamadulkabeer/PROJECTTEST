@@ -60,7 +60,6 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 				http.Redirect(w, r, "/home", http.StatusSeeOther)
 				return
 			}
-			// Password is incorrect, to handle
 
 		}
 		// Username not found, to handle
